@@ -72,13 +72,7 @@ build/attiny13:
 .PHONY: deploy
 deploy:
 	mkdir -p $(DEPLOY_DIR)
-	$(DEPLOY_CMD) -r keywords.txt library.properties ./src $(DEPLOY_DIR)
-
-.PHONY: run/gcc
-run/gcc:
-	mkdir -p $(TEMP_DIR)
-	gcc -o $(TEMP_DIR)/a.out -DGCC src/MicroSerial.cpp
-	$(TEMP_DIR)/a.out
+	$(DEPLOY_CMD) -r README.md keywords.txt library.properties ./src $(DEPLOY_DIR)
 
 .PHONY: install
 install: install/core install/lib
@@ -91,15 +85,21 @@ install/core:
 
 .PHONY: install/lib
 install/lib:
-	@if [ ! -f ~/.arduino15/arduino-cli.yaml ]; then arduino-cli config init; fi
-	arduino-cli --config-file $(BUILD_CONFIG) lib update-index
-	arduino-cli --config-file $(BUILD_CONFIG) lib install $(LIBS)
+# 	@if [ ! -f ~/.arduino15/arduino-cli.yaml ]; then arduino-cli config init; fi
+# 	arduino-cli --config-file $(BUILD_CONFIG) lib update-index
+# 	arduino-cli --config-file $(BUILD_CONFIG) lib install $(LIBS)
 
 .PHONY: uninstall/lib
 uninstall/lib:
 # 	@if [ ! -f ~/.arduino15/arduino-cli.yaml ]; then arduino-cli config init; fi
 # 	arduino-cli --config-file $(BUILD_CONFIG) lib update-index
 # 	arduino-cli --config-file $(BUILD_CONFIG) lib uninstall $(LIBS)
+
+.PHONY: run
+run:
+	mkdir -p $(TEMP_DIR)
+	gcc -o $(TEMP_DIR)/a.out -DGCC src/MicroSerial.cpp
+	$(TEMP_DIR)/a.out
 
 .PHONY: install/gcc
 install/gcc:

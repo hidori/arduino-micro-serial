@@ -326,6 +326,60 @@ See the `examples/` directory for complete usage examples:
 - **HelloSerial**: Basic "Hello World" example
 - **DebugSerial**: Conditional debug output controlled by DEBUG macro definition
 
+## Debug Support
+
+The library includes a useful **DebugSerial.h** utility that provides conditional debugging support for development and testing:
+
+### Debug Features
+
+- **Conditional compilation**: Debug output is completely removed when `DEBUG` is not defined
+- **Zero overhead**: No code size penalty in production builds
+- **Complete API coverage**: All MicroSerial functions available as debug macros
+- **Easy integration**: Simply `#include "DebugSerial.h"` and use `DEBUG_SERIAL_*()` macros
+
+### Debug Usage
+
+```cpp
+// Enable debug output by defining DEBUG before including
+#define DEBUG
+#include "DebugSerial.h"
+
+// Configure debug serial handle
+#if defined(__AVR__)
+#define __DEBUG_SERIAL_HANDLE__ DEBUG_SERIAL_HANDLE(PB0, 9600)
+#else
+#define __DEBUG_SERIAL_HANDLE__ DEBUG_SERIAL_HANDLE(2, 9600)
+#endif
+
+void setup() {
+  DEBUG_SERIAL_BEGIN();
+  DEBUG_SERIAL_WAIT_FOR();  // Wait for serial monitor
+}
+
+void loop() {
+  DEBUG_SERIAL_PRINTLN("Debug message");
+  DEBUG_SERIAL_PRINTDEC(12345);
+  DEBUG_SERIAL_NEWLINE();
+  DEBUG_SERIAL_PRINTHEX2(0xAB);    // 2-digit hex: AB
+  DEBUG_SERIAL_PRINTHEX4(0x1234);  // 4-digit hex: 1234
+  delay(1000);
+}
+```
+
+### Available Debug Macros
+
+- `DEBUG_SERIAL_HANDLE(tx, baudrate)` - Create debug serial handle
+- `DEBUG_SERIAL_BEGIN()` - Initialize debug serial
+- `DEBUG_SERIAL_WAIT_FOR()` - Wait for serial connection (100ms delay)
+- `DEBUG_SERIAL_PRINT(x)` / `DEBUG_SERIAL_PRINTLN(x)` - Print character/string
+- `DEBUG_SERIAL_PRINTDEC(x)` / `DEBUG_SERIAL_PRINTDECLN(x)` - Print decimal numbers
+- `DEBUG_SERIAL_PRINTHEX(x, n)` / `DEBUG_SERIAL_PRINTHEXLN(x, n)` - Print hex with n digits
+- `DEBUG_SERIAL_PRINTHEX2(x)` / `DEBUG_SERIAL_PRINTHEX2LN(x)` - Print 2-digit hex
+- `DEBUG_SERIAL_PRINTHEX4(x)` / `DEBUG_SERIAL_PRINTHEX4LN(x)` - Print 4-digit hex
+- `DEBUG_SERIAL_NEWLINE()` - Print newline
+
+When `DEBUG` is not defined, all debug macros expand to empty statements, ensuring zero runtime and memory overhead in production code.
+
 ## Technical Details
 
 ### Timing
